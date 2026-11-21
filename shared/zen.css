@@ -1,0 +1,130 @@
+/*
+ * Zen Proxy Manager design tokens, shared by the popup and the options page.
+ * Based on the zen-browser.app landing page (dark theme): warm paper background,
+ * ink text, coral used as an accent (hover, selection), not as large fills.
+ * Bricolage Grotesque: SIL Open Font License, see fonts/OFL.txt.
+ */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/bricolage-grotesque-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/bricolage-grotesque-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/bricolage-grotesque-600.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --zen-paper: #1f1f1f;
+  --zen-paper-deep: #1a1a19;
+  --zen-surface: #262625;
+  --zen-raised: #2e2e2c;
+  --zen-muted: rgba(255, 255, 255, 0.05);
+  --zen-subtle: rgba(255, 255, 255, 0.1);
+
+  /* Ink */
+  --zen-ink: #d1cfc0;
+  --zen-ink-soft: rgba(209, 207, 192, 0.8);
+  --zen-ink-faint: rgba(209, 207, 192, 0.5);
+  --zen-ink-strong: #f2f0e3;
+
+  /* Lines */
+  --zen-border: rgba(255, 255, 255, 0.08);
+  --zen-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Accents */
+  --zen-coral: #f76f53;
+  --zen-coral-hover: #fe846b;
+  --zen-coral-soft: rgba(247, 111, 83, 0.12);
+  --zen-coral-line: rgba(247, 111, 83, 0.45);
+  --zen-blue: #6287f5;
+  --zen-blue-soft: rgba(98, 135, 245, 0.12);
+
+  /* States */
+  --zen-ok: #7cc48d;
+  --zen-ok-soft: rgba(124, 196, 141, 0.12);
+  --zen-warn: #f7a74b;
+  --zen-danger: #e3401f;
+  --zen-danger-text: #ff9580;
+  --zen-danger-soft: rgba(227, 64, 31, 0.14);
+
+  /* Shape */
+  --zen-radius-sm: 6px;
+  --zen-radius-md: 8px;
+  --zen-radius-lg: 12px;
+  --zen-radius-xl: 16px;
+  --zen-radius-full: 9999px;
+  --zen-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
+  --zen-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+
+  /* Type and motion */
+  --zen-font: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --zen-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --zen-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --zen-duration: 0.15s;
+}
+
+body {
+  font-family: var(--zen-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+kbd {
+  font-family: var(--zen-mono);
+}
+
+::selection {
+  background-color: var(--zen-coral-soft);
+  color: var(--zen-ink-strong);
+}
+
+:focus-visible {
+  outline: 2px solid var(--zen-coral);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--zen-subtle) transparent;
+}
+
+/* Zen buttons grow slightly on hover and press in on click. */
+.zen-press {
+  transition: transform var(--zen-duration) var(--zen-ease), background-color var(--zen-duration) var(--zen-ease),
+    color var(--zen-duration) var(--zen-ease), border-color var(--zen-duration) var(--zen-ease);
+}
+
+.zen-press:hover {
+  transform: scale(1.02);
+}
+
+.zen-press:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zen-press:hover,
+  .zen-press:active {
+    transform: none;
+  }
+}

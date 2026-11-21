@@ -1,0 +1,68 @@
+{
+  "manifest_version": 3,
+  "name": "Zen Proxy Manager",
+  "version": "1.1.1",
+  "description": "Gestionnaire de proxy rapide et minimaliste pour Zen Browser, sans injection DOM ni script de contenu.",
+  "permissions": [
+    "storage",
+    "proxy",
+    "alarms",
+    "webRequest",
+    "webRequestAuthProvider",
+    "privacy"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": [
+      "background/storage.js",
+      "background/tester.js",
+      "background/proxy-engine.js",
+      "background/background.js"
+    ]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "zen-proxy-manager@the10x.tech",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ],
+        "optional": []
+      }
+    }
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/toolbar-on-light.svg",
+      "32": "icons/toolbar-on-light.svg"
+    },
+    "default_title": "Zen Proxy Manager",
+    "theme_icons": [
+      {
+        "light": "icons/toolbar-on-light.svg",
+        "dark": "icons/toolbar-on-dark.svg",
+        "size": 16
+      },
+      {
+        "light": "icons/toolbar-on-light.svg",
+        "dark": "icons/toolbar-on-dark.svg",
+        "size": 32
+      }
+    ]
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/logo-16.png",
+    "32": "icons/logo-32.png",
+    "48": "icons/logo-48.png",
+    "96": "icons/logo-96.png",
+    "128": "icons/logo-128.png"
+  }
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen Proxy Manager</title>
+  <link rel="stylesheet" href="../shared/zen.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-wrap">
+        <img class="header-logo" src="../icons/logo-mark.png" alt="">
+        <span class="logo-title">Zen Proxy</span>
+      </div>
+      <button class="icon-btn" id="btn-open-options" title="Gérer les profils et options" aria-label="Options">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06-.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Status Strip -->
+    <div class="status-strip" id="status-strip" data-state="direct">
+      <span class="status-dot" id="status-dot"></span>
+      <div class="status-info">
+        <div class="status-title-row">
+          <span class="status-name" id="status-name">Connexion Directe</span>
+          <span class="status-badge" id="status-badge">Direct</span>
+        </div>
+        <div class="status-meta" id="status-meta">Détection IP...</div>
+      </div>
+      <button class="icon-btn-small" id="btn-refresh-ip" title="Rafraîchir l'IP de sortie" aria-label="Rafraîchir IP">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Permission Warning Banner -->
+    <div class="permission-banner" id="permission-banner" style="display:none">
+      <span class="permission-banner-text">Accès aux sites requis pour router le trafic via le proxy.</span>
+      <button type="button" class="btn-permission" id="btn-grant-permission">Autoriser</button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" id="tab-btn-profiles" data-target="tab-profiles" role="tab" aria-selected="true">Profils</button>
+      <button class="nav-tab" id="tab-btn-manual" data-target="tab-manual" role="tab" aria-selected="false">Manuel</button>
+    </nav>
+
+    <!-- Main Content Panels -->
+    <main class="main-body">
+      <!-- Profiles Panel -->
+      <section class="tab-panel active" id="tab-profiles" role="tabpanel">
+        <div class="profiles-toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="search" id="profiles-search" placeholder="Rechercher un profil..." autocomplete="off" spellcheck="false">
+          </div>
+          <button class="btn-action-small" id="btn-add-profile-popup" title="Ajouter un profil">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Nouveau
+          </button>
+        </div>
+
+        <div class="profiles-list" id="profiles-list">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div class="empty-state" id="profiles-empty" style="display:none">
+          <p>Aucun profil enregistré.</p>
+          <button class="btn-primary-small" id="btn-create-first-profile">Créer un profil</button>
+        </div>
+      </section>
+
+      <!-- Manual Panel -->
+      <section class="tab-panel" id="tab-manual" role="tabpanel" style="display:none">
+        <form class="manual-form" id="manual-form">
+          <div class="form-row-grid">
+            <div class="form-group flex-1">
+              <label for="manual-protocol">Protocole</label>
+              <select id="manual-protocol" class="input-select">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+                <option value="socks5" selected>SOCKS5</option>
+                <option value="socks4">SOCKS4</option>
+              </select>
+            </div>
+            <div class="form-group flex-3">
+              <label for="manual-host">Hôte / IP</label>
+              <input type="text" id="manual-host" class="input-text" placeholder="1.2.3.4 ou proxy.com" required autocomplete="off" spellcheck="false">
+            </div>
+            <div class="form-group flex-1">
+              <label for="manual-port">Port</label>
+              <input type="number" id="manual-port" class="input-text" placeholder="8080" min="1" max="65535" required>
+            </div>
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group flex-1">
+              <label for="manual-user">Utilisateur (optionnel)</label>
+              <input type="text" id="manual-user" class="input-text" placeholder="username" autocomplete="off">
+            </div>
+            <div class="form-group flex-1">
+              <label for="manual-pass">Mot de passe (optionnel)</label>
+              <input type="password" id="manual-pass" class="input-text" placeholder="••••••••" autocomplete="new-password">
+            </div>
+          </div>
+
+          <div class="manual-feedback" id="manual-feedback" style="display:none"></div>
+
+          <div class="form-actions-row">
+            <button type="button" class="btn-secondary" id="btn-test-manual">Tester</button>
+            <button type="submit" class="btn-primary" id="btn-connect-manual">Connecter</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-modes">
+        <button class="mode-pill active" id="btn-mode-direct" title="Connexion directe sans proxy">Direct</button>
+        <button class="mode-pill" id="btn-mode-system" title="Utiliser le proxy du système">Système</button>
+      </div>
+      <button class="btn-disconnect" id="btn-disconnect" style="display:none">Déconnecter</button>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

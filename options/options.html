@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen Proxy Manager — Paramètres</title>
+  <link rel="icon" type="image/png" href="../icons/favicon.png">
+  <link rel="stylesheet" href="../shared/zen.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-layout">
+    <!-- Sidebar / Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="../icons/logo-mark.png" alt="">
+        <span class="brand-text">Zen Proxy</span>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-item active" data-tab="tab-profiles">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+            <line x1="6" y1="6" x2="6.01" y2="6"/>
+            <line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+          Profils &amp; Groupes
+        </button>
+        <button class="nav-item" data-tab="tab-import">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Importer en masse
+        </button>
+        <button class="nav-item" data-tab="tab-backup">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Sauvegarde
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="version-label" id="version-label">Zen Proxy Manager</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+      <!-- Tab 1: Profiles & Groups -->
+      <section class="tab-pane active" id="tab-profiles">
+        <div class="pane-header">
+          <div>
+            <h1 class="pane-title">Profils &amp; Groupes</h1>
+            <p class="pane-subtitle">Gérez vos serveurs proxies, vos groupes et vos listes d'exclusion.</p>
+          </div>
+          <div class="pane-actions">
+            <button class="btn-secondary" id="btn-open-group-modal">Nouveau Groupe</button>
+            <button class="btn-primary" id="btn-open-profile-modal">Ajouter un Profil</button>
+          </div>
+        </div>
+
+        <!-- Groups Bar -->
+        <div class="groups-filter-bar" id="groups-filter-bar">
+          <button class="group-chip active" data-group-id="all">Tous les profils</button>
+          <!-- Injected group chips -->
+        </div>
+
+        <!-- Profiles List -->
+        <div class="table-container">
+          <div class="profile-row profile-head" aria-hidden="true">
+            <span>Profil</span>
+            <span>Serveur</span>
+            <span>Utilisateur</span>
+            <span></span>
+          </div>
+          <div class="profile-list" id="profiles-list">
+            <!-- Dynamically rendered -->
+          </div>
+          <div class="table-empty" id="table-empty" style="display:none">
+            Aucun profil configuré. Cliquez sur « Ajouter un Profil » ou « Importer en masse ».
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Mass Import -->
+      <section class="tab-pane" id="tab-import" style="display:none">
+        <div class="pane-header">
+          <div>
+            <h1 class="pane-title">Import en masse</h1>
+            <p class="pane-subtitle">Importez des listes de proxies aux formats texte, CSV ou JSON.</p>
+          </div>
+        </div>
+
+        <div class="import-card">
+          <div class="import-instructions">
+            <strong>Formats acceptés (une ligne par proxy) :</strong>
+            <code>1.2.3.4:8080</code>
+            <code>user:pass@host:port</code>
+            <code>host:port:user:pass</code>
+            <code>socks5://user:pass@host:port</code>
+            <span>Prend également en charge le JSON ou CSV avec en-têtes (host, port, username, password).</span>
+          </div>
+
+          <div class="import-controls-row">
+            <div class="form-group flex-1">
+              <label for="import-target-group">Assigner au groupe</label>
+              <select id="import-target-group" class="input-select">
+                <option value="">(Aucun groupe)</option>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="import-default-proto">Protocole par défaut</label>
+              <select id="import-default-proto" class="input-select">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+                <option value="socks5" selected>SOCKS5</option>
+                <option value="socks4">SOCKS4</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="import-textarea">Coller la liste de proxies :</label>
+            <textarea id="import-textarea" class="import-textarea" placeholder="Collez vos proxies ici..." rows="8" spellcheck="false"></textarea>
+          </div>
+
+          <div class="import-preview-box" id="import-preview-box" style="display:none">
+            <div class="import-preview-header">
+              <span id="import-count-label">0 proxy détecté</span>
+              <button class="btn-primary" id="btn-execute-import">Valider l'importation</button>
+            </div>
+            <div class="import-preview-list" id="import-preview-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Backup -->
+      <section class="tab-pane" id="tab-backup" style="display:none">
+        <div class="pane-header">
+          <div>
+            <h1 class="pane-title">Sauvegarde</h1>
+            <p class="pane-subtitle">Exportez vos profils et groupes dans un fichier, puis importez-le dans un autre navigateur.</p>
+          </div>
+        </div>
+
+        <div class="import-card">
+          <div class="backup-row">
+            <div>
+              <strong class="backup-title">Exporter</strong>
+              <p class="form-hint">Télécharge un fichier JSON avec tous les profils et groupes.</p>
+            </div>
+            <button class="btn-primary" id="btn-export-config">Exporter</button>
+          </div>
+          <div class="backup-warning">
+            Le fichier contient les identifiants des proxies en clair. Ne le partagez qu'avec des personnes de confiance et supprimez-le après l'import.
+          </div>
+        </div>
+
+        <div class="import-card backup-card-spaced">
+          <div class="backup-row">
+            <div>
+              <strong class="backup-title">Importer</strong>
+              <p class="form-hint">Ajoute les profils et groupes du fichier. Ceux qui existent déjà sont mis à jour, sans doublon.</p>
+            </div>
+            <button class="btn-secondary" id="btn-pick-backup">Choisir un fichier</button>
+            <input type="file" id="input-backup-file" accept=".json,application/json" hidden>
+          </div>
+          <div class="import-preview-box" id="backup-preview-box" style="display:none">
+            <div class="import-preview-header">
+              <span id="backup-preview-label"></span>
+              <button class="btn-primary" id="btn-execute-backup-import">Importer</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal-backdrop" id="modal-profile" style="display:none">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" id="profile-modal-title">Nouveau Profil</h2>
+        <button class="btn-close" id="btn-close-profile-modal">&times;</button>
+      </div>
+      <form id="profile-form">
+        <input type="hidden" id="f-profile-id">
+
+        <div class="form-row-2">
+          <div class="form-group flex-2">
+            <label for="f-profile-name">Nom du profil</label>
+            <input type="text" id="f-profile-name" class="input-text" placeholder="Mon Proxy" required>
+          </div>
+          <div class="form-group flex-1">
+            <label for="f-profile-color">Couleur</label>
+            <input type="color" id="f-profile-color" class="input-color" value="#3B82F6">
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group flex-1">
+            <label for="f-profile-proto">Protocole</label>
+            <select id="f-profile-proto" class="input-select">
+              <option value="http">HTTP</option>
+              <option value="https">HTTPS</option>
+              <option value="socks5" selected>SOCKS5</option>
+              <option value="socks4">SOCKS4</option>
+            </select>
+          </div>
+          <div class="form-group flex-3">
+            <label for="f-profile-host">Serveur (Hôte / IP)</label>
+            <input type="text" id="f-profile-host" class="input-text" placeholder="1.2.3.4" required spellcheck="false">
+          </div>
+          <div class="form-group flex-1">
+            <label for="f-profile-port">Port</label>
+            <input type="number" id="f-profile-port" class="input-text" placeholder="1080" min="1" max="65535" required>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group flex-1">
+            <label for="f-profile-user">Nom d'utilisateur (optionnel)</label>
+            <input type="text" id="f-profile-user" class="input-text" placeholder="Username" autocomplete="off">
+          </div>
+          <div class="form-group flex-1">
+            <label for="f-profile-pass">Mot de passe (optionnel)</label>
+            <input type="password" id="f-profile-pass" class="input-text" placeholder="Password" autocomplete="new-password">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="f-profile-group">Groupe</label>
+          <select id="f-profile-group" class="input-select">
+            <option value="">(Aucun groupe)</option>
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="f-profile-allow">Sites autorisés (un site par ligne)</label>
+          <textarea id="f-profile-allow" class="input-textarea" rows="3" spellcheck="false" placeholder="chatgpt.com&#10;netflix.com"></textarea>
+          <span class="form-hint">Vide : le proxy sert pour tous les sites. Sinon, seuls les onglets qui affichent ces sites (sous-domaines compris) passent par le proxy, avec toutes leurs ressources.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-profile-bypass">Liste d'exclusion / Bypass (une règle par ligne)</label>
+          <textarea id="f-profile-bypass" class="input-textarea" rows="3" spellcheck="false" placeholder="localhost&#10;127.0.0.1&#10;*.interne.lan"></textarea>
+          <span class="form-hint">Les requêtes vers ces hôtes contournent le proxy.</span>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-profile">Annuler</button>
+          <button type="submit" class="btn-primary" id="btn-save-profile">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Group Modal -->
+  <div class="modal-backdrop" id="modal-group" style="display:none">
+    <div class="modal-dialog modal-dialog-sm">
+      <div class="modal-header">
+        <h2 class="modal-title" id="group-modal-title">Nouveau Groupe</h2>
+        <button class="btn-close" id="btn-close-group-modal">&times;</button>
+      </div>
+      <form id="group-form">
+        <input type="hidden" id="f-group-id">
+
+        <div class="form-group">
+          <label for="f-group-name">Nom du groupe</label>
+          <input type="text" id="f-group-name" class="input-text" placeholder="Ex: Résidentiel, Dédié, Datacenter" required>
+        </div>
+
+        <div class="form-group">
+          <label for="f-group-color">Couleur</label>
+          <input type="color" id="f-group-color" class="input-color" value="#10B981">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-group">Annuler</button>
+          <button type="submit" class="btn-primary" id="btn-save-group">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
